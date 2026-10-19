@@ -17,15 +17,17 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
+    - name: Auto Create Android Directories
+      run: |
+        mkdir -p app/src/main/cpp
+        mkdir -p app/src/main/java
+        if [ -f main.cpp ]; then cp main.cpp app/src/main/cpp/; fi
+        if [ -f build.gradle ] && [ ! -f app/build.gradle ]; then cp build.gradle app/; fi
+
     - name: Auto Fix Gradle Wrapper
       run: |
         gradle wrapper --gradle-version 8.0
         chmod +x gradlew
-
-    - name: Create Correct App Structure
-      run: |
-        mkdir -p app/src/main/cpp
-        if [ -f main.cpp ]; then mv main.cpp app/src/main/cpp/; fi
 
     - name: Build Android APK
       run: ./gradlew assembleDebug --stacktrace
@@ -37,4 +39,5 @@ jobs:
         path: |
           **/build/outputs/apk/debug/*.apk
           **/build/outputs/apk/release/*.apk
+
 
